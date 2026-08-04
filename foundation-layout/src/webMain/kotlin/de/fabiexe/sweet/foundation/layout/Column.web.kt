@@ -24,13 +24,13 @@ actual fun Column(
             element.style.flexDirection = "column"
             element.applyArrangement(verticalArrangement)
             element.applyAlignment(horizontalAlignment)
-            element.applyPadding(modifier)
+            element.applyModifier(modifier)
             element
         },
         update = {
             set(verticalArrangement, HTMLDivElement::applyArrangement)
             set(horizontalAlignment, HTMLDivElement::applyAlignment)
-            set(modifier, HTMLElement::applyPadding)
+            set(modifier, HTMLElement::applyModifier)
         },
         content = content
     )
