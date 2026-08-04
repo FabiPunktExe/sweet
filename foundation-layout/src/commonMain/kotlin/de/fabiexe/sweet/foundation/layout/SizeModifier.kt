@@ -12,9 +12,9 @@ data class SizeElement(
 ) : Modifier.Element
 
 fun Modifier.width(width: Float) = this then SizeElement(minWidth = width, maxWidth = width)
-fun Modifier.width(minWidth: Float, maxWidth: Float) = this then SizeElement(minWidth = minWidth, maxWidth = maxWidth)
+fun Modifier.width(minWidth: Float?, maxWidth: Float?) = this then SizeElement(minWidth = minWidth, maxWidth = maxWidth)
 fun Modifier.height(height: Float) = this then SizeElement(minHeight = height, maxHeight = height)
-fun Modifier.height(minHeight: Float, maxHeight: Float) = this then SizeElement(minHeight = minHeight, maxHeight = maxHeight)
+fun Modifier.height(minHeight: Float?, maxHeight: Float?) = this then SizeElement(minHeight = minHeight, maxHeight = maxHeight)
 fun Modifier.size(size: Float) = this then SizeElement(size, size, size, size)
 
 @Immutable
