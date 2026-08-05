@@ -1,10 +1,11 @@
-package de.fabiexe.sweet.ui
+package de.fabiexe.sweet.ui.window
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
+import de.fabiexe.sweet.ui.DomApplier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

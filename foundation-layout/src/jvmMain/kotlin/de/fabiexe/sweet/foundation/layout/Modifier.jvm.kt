@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.fabiexe.sweet.ui.CombinedModifier
 import de.fabiexe.sweet.ui.Modifier
-import de.fabiexe.sweet.ui.toAndroidxModifier
+import de.fabiexe.sweet.ui.toAndroidxModifier as uiToAndroidxModifier
 import androidx.compose.ui.CombinedModifier as AndroidxCombinedModifier
 import androidx.compose.ui.Modifier as AndroidxModifier
 
@@ -46,10 +46,10 @@ fun Modifier.toAndroidxModifier(): AndroidxModifier = when (this) {
             maxHeight = maxHeight?.dp ?: Dp.Unspecified
         )
     }
-    is FillElement -> when (direction) {
+    is FillElement -> {println(this);when (direction) {
         FillElement.Direction.Horizontal -> AndroidxModifier.fillMaxWidth(fraction)
         FillElement.Direction.Vertical -> AndroidxModifier.fillMaxHeight(fraction)
         FillElement.Direction.Both -> AndroidxModifier.fillMaxSize(fraction)
-    }
-    else -> toAndroidxModifier()
+    }}
+    else -> uiToAndroidxModifier()
 }

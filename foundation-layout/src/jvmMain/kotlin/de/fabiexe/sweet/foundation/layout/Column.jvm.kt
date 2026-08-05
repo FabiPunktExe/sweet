@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import de.fabiexe.sweet.ui.Alignment
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.toHorizontalAndroidxAlignment
-import androidx.compose.foundation.layout.Column as FoundationColumn
+import androidx.compose.foundation.layout.Column as AndroidxColumn
 
 @Composable
 actual fun Column(
@@ -13,7 +13,7 @@ actual fun Column(
     horizontalAlignment: Alignment,
     content: @Composable () -> Unit
 ) {
-    FoundationColumn(
+    AndroidxColumn(
         modifier = modifier.toAndroidxModifier(),
         verticalArrangement = verticalArrangement.toVerticalAndroidxArrangement(),
         horizontalAlignment = horizontalAlignment.toHorizontalAndroidxAlignment()

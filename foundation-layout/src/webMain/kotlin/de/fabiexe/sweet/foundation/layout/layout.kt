@@ -55,7 +55,7 @@ fun HTMLElement.applySize(modifier: Modifier) {
             acc
         }
     }
-    style.width = if (widthFraction != null) "$widthFraction%" else "fit-content"
+    style.width = if (widthFraction != null) "${widthFraction * 100}%" else "fit-content"
 
     val heightFraction = modifier.fold<Float?, FillElement>(null) { acc, element ->
         if (element.direction == FillElement.Direction.Vertical || element.direction == FillElement.Direction.Both) {
@@ -64,7 +64,7 @@ fun HTMLElement.applySize(modifier: Modifier) {
             acc
         }
     }
-    style.height = if (heightFraction != null) "$heightFraction%" else ""
+    style.height = if (heightFraction != null) "${heightFraction * 100}%" else "fit-content"
 }
 
 fun HTMLElement.applyPointerHoverIcon(modifier: Modifier, defaultIcon: PointerIcon?) {
