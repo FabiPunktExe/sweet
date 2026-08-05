@@ -2,7 +2,8 @@ package de.fabiexe.sweet.foundation.layout
 
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.fold
-import web.cssom.min
+import de.fabiexe.sweet.ui.input.pointer.PointerHoverIconElement
+import de.fabiexe.sweet.ui.input.pointer.PointerIcon
 import web.html.HTMLDivElement
 import web.html.HTMLElement
 
@@ -64,4 +65,15 @@ fun HTMLElement.applySize(modifier: Modifier) {
         }
     }
     style.height = if (heightFraction != null) "$heightFraction%" else ""
+}
+
+fun HTMLElement.applyPointerHoverIcon(modifier: Modifier, defaultIcon: PointerIcon?) {
+    val icon = modifier.fold<PointerIcon?, PointerHoverIconElement>(null) { _, element -> element.pointerIcon }
+    style.cursor = when (icon ?: defaultIcon) {
+        PointerIcon.Default -> "default"
+        PointerIcon.Crosshair -> "crosshair"
+        PointerIcon.Text -> "text"
+        PointerIcon.Hand -> "pointer"
+        null -> ""
+    }
 }

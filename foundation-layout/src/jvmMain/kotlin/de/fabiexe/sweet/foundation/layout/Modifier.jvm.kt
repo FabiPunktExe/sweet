@@ -1,11 +1,11 @@
-package de.fabiexe.sweet.ui
+package de.fabiexe.sweet.foundation.layout
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.fabiexe.sweet.foundation.layout.FillElement
-import de.fabiexe.sweet.foundation.layout.PaddingElement
-import de.fabiexe.sweet.foundation.layout.SizeElement
+import de.fabiexe.sweet.ui.CombinedModifier
+import de.fabiexe.sweet.ui.Modifier
+import de.fabiexe.sweet.ui.toAndroidxModifier
 import androidx.compose.ui.CombinedModifier as AndroidxCombinedModifier
 import androidx.compose.ui.Modifier as AndroidxModifier
 
@@ -51,5 +51,5 @@ fun Modifier.toAndroidxModifier(): AndroidxModifier = when (this) {
         FillElement.Direction.Vertical -> AndroidxModifier.fillMaxHeight(fraction)
         FillElement.Direction.Both -> AndroidxModifier.fillMaxSize(fraction)
     }
-    else -> AndroidxModifier.Companion
+    else -> toAndroidxModifier()
 }
