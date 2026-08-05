@@ -22,3 +22,4 @@ plugins {
 
 include(":foundation-layout")
 include(":ui")
+include(":material3")
