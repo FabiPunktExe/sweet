@@ -34,10 +34,10 @@ expect fun Button(
     size: ButtonSize = ButtonSize.Small,
     shape: ButtonShape = ButtonShape.Round,
     colors: ButtonColors = ButtonColors(
-        containerColor = LocalColorScheme.current.primary,
-        contentColor = LocalColorScheme.current.onPrimary,
-        disabledContainerColor = LocalColorScheme.current.onSurface.copy(alpha = 0.1f),
-        disabledContentColor = LocalColorScheme.current.onSurface.copy(alpha = 0.38f)
+        containerColor = currentColorScheme().primary,
+        contentColor = currentColorScheme().onPrimary,
+        disabledContainerColor = currentColorScheme().onSurface.copy(alpha = 0.1f),
+        disabledContentColor = currentColorScheme().onSurface.copy(alpha = 0.38f)
     ),
     content: @Composable () -> Unit
 )

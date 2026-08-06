@@ -12,9 +12,7 @@ interface Modifier {
     }
 
     interface Element : Modifier {
-        override fun <T> fold(initial: T, operation: (T, Element) -> T) : T {
-            return operation(initial, this)
-        }
+        override fun <T> fold(initial: T, operation: (T, Element) -> T) : T = operation(initial, this)
     }
 }
 
@@ -23,7 +21,7 @@ inline fun <T, reified E : Element> Modifier.fold(initial: T, crossinline operat
         if (element is E) {
             operation(acc, element)
         } else {
-            initial
+            acc
         }
     }
 }

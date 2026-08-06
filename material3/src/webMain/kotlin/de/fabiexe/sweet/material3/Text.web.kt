@@ -16,16 +16,19 @@ actual fun Text(
     modifier: Modifier
 ) {
     val contentColor = LocalContentColor.current
+    val fontWeight = LocalFontWeight.current
     ComposeNode<HTMLSpanElement, DomApplier>(
         factory = {
             val element = document.createElement("span") as HTMLSpanElement
             element.style.color = contentColor.toCssString()
+            element.style.fontWeight = fontWeight.value.toString()
             element.textContent = text
             element.applyPadding(modifier)
             element
         },
         update = {
             set(contentColor) { style.color = it.toCssString() }
+            set(fontWeight) { style.fontWeight = it.value.toString() }
             set(text) { textContent = it }
             set(modifier, HTMLElement::applyPadding)
         }

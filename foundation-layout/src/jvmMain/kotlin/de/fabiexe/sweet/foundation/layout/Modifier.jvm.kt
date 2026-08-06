@@ -46,10 +46,10 @@ fun Modifier.toAndroidxModifier(): AndroidxModifier = when (this) {
             maxHeight = maxHeight?.dp ?: Dp.Unspecified
         )
     }
-    is FillElement -> {println(this);when (direction) {
+    is FillElement -> when (direction) {
         FillElement.Direction.Horizontal -> AndroidxModifier.fillMaxWidth(fraction)
         FillElement.Direction.Vertical -> AndroidxModifier.fillMaxHeight(fraction)
         FillElement.Direction.Both -> AndroidxModifier.fillMaxSize(fraction)
-    }}
+    }
     else -> uiToAndroidxModifier()
 }

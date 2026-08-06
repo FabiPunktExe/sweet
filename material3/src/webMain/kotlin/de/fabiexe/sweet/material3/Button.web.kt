@@ -9,6 +9,7 @@ import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.graphics.toCssString
 import de.fabiexe.sweet.ui.input.pointer.PointerIcon
+import de.fabiexe.sweet.ui.text.font.FontWeight
 import web.dom.document
 import web.events.EventHandler
 import web.html.HTMLButtonElement
@@ -70,11 +71,14 @@ actual fun Button(
             }
         ) {
             val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
-            CompositionLocalProvider(LocalContentColor provides contentColor) {
+            CompositionLocalProvider(
+                LocalContentColor provides contentColor,
+                LocalFontWeight provides FontWeight.SemiBold
+            ) {
                 Row(
                     modifier = Modifier
-                        .width(minWidth = 58f, maxWidth = null)
-                        .height(minHeight = 40f, maxHeight = null)
+                        .width(minWidth = 58f - size.contentPadding.left - size.contentPadding.right, maxWidth = null)
+                        .height(minHeight = 40f - size.contentPadding.top - size.contentPadding.bottom, maxHeight = null)
                         .padding(size.contentPadding),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Center,
