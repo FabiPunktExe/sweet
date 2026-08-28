@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.*
 import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
+import de.fabiexe.sweet.ui.graphics.Color
 import de.fabiexe.sweet.ui.graphics.toCssString
 import de.fabiexe.sweet.ui.input.pointer.PointerIcon
 import web.dom.ElementId
@@ -66,22 +67,12 @@ actual fun TextField(
                 element.style.backgroundColor = "transparent"
 
                 // Dynamic properties
-                element.style.padding = "${16 - borderWidth}px"
+                element.style.padding = "${9 - borderWidth}px"
                 element.style.borderWidth = "${borderWidth}px"
                 element.style.borderColor = outlineColor.toCssString()
                 element.applyModifier(modifier)
                 element.applyPointerHoverIcon(modifier, if (enabled) PointerIcon.Text else null)
-                //if (!enabled) element.style.pointerEvents = "none"
-                /*input.style.border = "none"
-                input.style.padding = paddingValue
-                input.style.boxSizing = "border-box"
-                input.style.fontSize = "16px"
-                input.style.fontFamily = "inherit"
-                input.style.color = inputColor.toCssString()
-                input.rows = if (singleLine) 1 else 2
-                input.style.whiteSpace = if (singleLine) "nowrap" else "normal"
-                input.style.overflowX = if (singleLine) "auto" else "hidden"
-                input.style.overflowY = if (singleLine) "hidden" else "auto"*/
+
                 element.value = value
                 element.disabled = !enabled
                 element.readOnly = readOnly
@@ -89,14 +80,15 @@ actual fun TextField(
                 element.onfocus = EventHandler { focused = true }
                 element.onblur = EventHandler { focused = false }
                 element.onkeydown = EventHandler { ev ->
-                    if (singleLine && ev.key == "Enter") ev.preventDefault()
+                    if (singleLine && ev.key == "Enter") {
+                        ev.preventDefault()
+                    }
                 }
+
                 element
             },
             update = {
                 set(value) { if (this.value != it) this.value = it }
-                //set(inputColor) { style.color = it.toCssString() }
-                //set(paddingValue) { style.padding = it }
                 set(enabled) { disabled = !it }
                 set(readOnly) { this.readOnly = it }
                 set(modifier) {
@@ -104,56 +96,68 @@ actual fun TextField(
                     applyPointerHoverIcon(it, if (enabled) PointerIcon.Text else null)
                 }
                 set(focused) {
-                    style.padding = "${16 - borderWidth}px"
+                    style.padding = "${9 - borderWidth}px"
                     style.borderWidth = "${borderWidth}px"
                     style.borderColor = outlineColor.toCssString()
                 }
-                /*set(singleLine) { sl ->
-                rows = if (sl) 1 else 2
-                style.whiteSpace = if (sl) "nowrap" else "normal"
-                style.overflowX = if (sl) "auto" else "hidden"
-                style.overflowY = if (sl) "hidden" else "auto"
-                onkeydown = EventHandler { ev -> if (sl && ev.key == "Enter") ev.preventDefault() }
-            }
-            set(onValueChange) { handler -> oninput = EventHandler { handler(this.value) } }*/
             }
         )
 
         if (label != null) {
-            val labelFloating = focused || value.isNotEmpty()
-            ComposeNode<HTMLLabelElement, DomApplier>(
-                factory = {
-                    val element = document.createElement("label") as HTMLLabelElement
-
-                    // Constant properties
-                    element.htmlFor = ElementId(id.toString())
-                    element.style.position = "absolute"
-                    element.style.left = "12px"
-                    element.style.pointerEvents = "none"
-                    element.style.userSelect = "none"
-                    element.style.whiteSpace = "nowrap"
-                    element.style.transition = "top 0.15s ease, font-size 0.15s ease"
-
-                    // Dynamic properties
-                    element.style.top = if (labelFloating) "0" else "50%"
-                    element.style.transform = if (labelFloating) "none" else "translateY(-50%)"
-                    element.style.fontSize = if (labelFloating) "12px" else "16px"
-                    //element.style.background = if (labelFloating) surfaceColor.toCssString() else "transparent"
-                    element.style.padding = if (labelFloating) "0 4px" else "0"
-                    element
-                },
-                update = {
-                    set(labelFloating) {
-                        style.top = if (it) "0" else "50%"
-                        style.transform = if (labelFloating) "none" else "translateY(-50%)"
-                        style.fontSize = if (it) "12px" else "16px"
-                        //style.background = if (it) surfaceColor.toCssString() else "transparent"
-                        style.padding = if (it) "0 4px" else "0"
-                    }
-                }
-            ) {
-                CompositionLocalProvider(LocalContentColor provides outlineColor, label)
-            }
+            FloatingLabel(
+                id = id,
+                floating = focused || value.isNotEmpty(),
+                contentColor = outlineColor,
+                content = label
+            )
         }
     }
+}
+
+@Composable
+private fun FloatingLabel(
+    id: Uuid,
+    floating: Boolean,
+    contentColor: Color,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(LocalContentColor provides contentColor) {
+        val backgroundColor = LocalBackgroundColor.current
+        ComposeNode<HTMLLabelElement, DomApplier>(
+            factory = {
+                val element = document.createElement("label") as HTMLLabelElement
+
+                // Constant properties
+                element.htmlFor = ElementId(id.toString())
+                element.style.position = "absolute"
+                element.style.left = "12px"
+                element.style.pointerEvents = "none"
+                element.style.userSelect = "none"
+                element.style.whiteSpace = "nowrap"
+                element.style.transition = "top 0.15s linear, font-size 0.15s linear"
+
+                // Dynamic properties
+                element.applyFloatingLabelStyle(floating, backgroundColor)
+
+                element
+            },
+            update = {
+                set(floating) { applyFloatingLabelStyle(it, backgroundColor) }
+                set(backgroundColor) { applyFloatingLabelStyle(floating, it) }
+            },
+            content = content
+        )
+    }
+}
+
+private fun HTMLLabelElement.applyFloatingLabelStyle(floating: Boolean, backgroundColor: Color) {
+    style.top = if (floating) "${MinimizedLabelHalfHeight}px" else "calc(${MinimizedLabelHalfHeight}px + 50%)"
+    style.transform = if (floating) {
+        "translateY(-50%)"
+    } else {
+        "translateY(calc(${MinimizedLabelHalfHeight.toFloat() / -2}px - 50%))"
+    }
+    style.fontSize = if (floating) "12px" else "16px"
+    style.background = if (floating) backgroundColor.toCssString() else "transparent"
+    style.padding = if (floating) "0 4px" else "0"
 }

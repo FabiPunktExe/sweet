@@ -7,6 +7,7 @@ import de.fabiexe.sweet.ui.graphics.Color
 import de.fabiexe.sweet.ui.text.font.FontWeight
 
 val LocalColorScheme = compositionLocalOf { ColorScheme() }
+val LocalBackgroundColor = compositionLocalOf<Color> { error("not provided") }
 val LocalContentColor = compositionLocalOf<Color> { error("not provided") }
 val LocalFontWeight = compositionLocalOf<FontWeight> { error("not provided") }
 

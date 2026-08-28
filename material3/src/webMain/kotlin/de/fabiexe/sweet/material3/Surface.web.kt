@@ -19,7 +19,10 @@ actual fun Surface(
     contentColor: Color,
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider(LocalContentColor provides contentColor) {
+    CompositionLocalProvider(
+        LocalBackgroundColor provides color,
+        LocalContentColor provides contentColor
+    ) {
         val modifier = Modifier.fillMaxSize(1f) then modifier
         ComposeNode<HTMLDivElement, DomApplier>(
             factory = {
