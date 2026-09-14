@@ -1,0 +1,11 @@
+product: jvm/app
+
+dependencies:
+  - //example
+  - $compose.desktop.currentOs
+
+settings:
+  jvm:
+    mainClass: de.fabiexe.sweet.example.MainKt
+  compose:
+    enabled: true

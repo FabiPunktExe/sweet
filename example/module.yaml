@@ -1,0 +1,12 @@
+product:
+  type: kmp/lib
+  platforms: [ jvm, android, js, wasmJs ]
+
+dependencies:
+  - //ui
+  - //foundation-layout
+  - //material3
+
+settings:
+  compose:
+    enabled: true

@@ -1,0 +1,8 @@
+modules:
+  - example
+  - example-js
+  - example-jvm
+  - example-wasm
+  - foundation-layout
+  - material3
+  - ui

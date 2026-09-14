@@ -1,0 +1,21 @@
+product:
+  type: kmp/lib
+  platforms: [ jvm, android, js, wasmJs ]
+
+aliases:
+  nonWeb: [ jvm, android ]
+
+dependencies@nonWeb:
+  - $compose.ui
+
+dependencies@web:
+  - $libs.kotlin.wrappers.browser
+
+settings:
+  compose:
+    enabled: true
+
+settings@wasmJs:
+  kotlin:
+    optIns:
+      - kotlin.js.ExperimentalWasmJsInterop

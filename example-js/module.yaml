@@ -1,0 +1,9 @@
+product: js/app
+
+dependencies:
+  - //example
+  - //ui
+
+settings:
+  compose:
+    enabled: true

@@ -1,0 +1,21 @@
+product:
+  type: kmp/lib
+  platforms: [ jvm, android, js, wasmJs ]
+
+aliases:
+  nonWeb: [ jvm, android ]
+
+dependencies:
+  - //ui
+  - //foundation-layout
+
+dependencies@nonWeb:
+  - $compose.ui
+  - $compose.material3
+
+dependencies@web:
+  - $libs.kotlin.wrappers.browser
+
+settings:
+  compose:
+    enabled: true
