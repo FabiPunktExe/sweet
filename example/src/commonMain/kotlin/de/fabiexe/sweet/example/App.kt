@@ -29,10 +29,24 @@ fun App() {
                     onValueChange = { name = it },
                     label = { Text("Name") }
                 )
+                Text("Test")
+                Text("Test")
                 TextField(
                     value = message,
                     onValueChange = { message = it },
                     label = { Text("Message") },
+                    singleLine = false
+                )
+                TextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    label = { Text("Name") },
+                    singleLine = false
+                )
+                TextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    label = { Text("Message 3") },
                     singleLine = false
                 )
                 Button(onClick = { count++ }) {

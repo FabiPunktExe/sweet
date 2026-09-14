@@ -4,18 +4,15 @@ import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.*
 import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
-import de.fabiexe.sweet.ui.graphics.Color
 import de.fabiexe.sweet.ui.graphics.toCssString
 import de.fabiexe.sweet.ui.input.pointer.PointerIcon
 import web.dom.ElementId
 import web.dom.document
 import web.events.EventHandler
 import web.html.HTMLDivElement
-import web.html.HTMLLabelElement
+import web.html.HTMLElement
 import web.html.HTMLTextAreaElement
 import kotlin.uuid.Uuid
-
-private const val MinimizedLabelHalfHeight = 16 / 2
 
 @Composable
 actual fun TextField(
@@ -27,30 +24,48 @@ actual fun TextField(
     label: @Composable (() -> Unit)?,
     singleLine: Boolean,
 ) {
+    var focused by remember { mutableStateOf(false) }
+
+    val colorScheme = LocalColorScheme.current
+    val outlineColor = when {
+        !enabled -> colorScheme.onSurface.copy(alpha = 0.12f)
+        focused -> colorScheme.primary
+        else -> colorScheme.outline
+    }
+    val textColor = if (enabled) colorScheme.onSurface else colorScheme.onSurface.copy(alpha = 0.38f)
+    val caretColor = if (enabled) colorScheme.primary else colorScheme.onSurface.copy(alpha = 0.38f)
+
+    val containerModifier = Modifier
+        .padding(top = 10f)
+        .width(minWidth = 280f, maxWidth = null)
+        .height(minHeight = 56f, maxHeight = null)
+        .then(modifier)
+
     ComposeNode<HTMLDivElement, DomApplier>(
         factory = {
             val element = document.createElement("div") as HTMLDivElement
+
+            // Constant properties
             element.style.position = "relative"
+            element.style.overflow = "visible"
+
+            // Dynamic properties
+            element.applyModifier(containerModifier)
+            element.applyPointerHoverIcon(containerModifier, if (enabled) PointerIcon.Text else null)
+
             element
         },
-        update = {}
-    ) {
-        val id = remember { Uuid.random() }
-        var focused by remember { mutableStateOf(false) }
-
-        val colorScheme = LocalColorScheme.current
-
-        val borderWidth = if (focused) 2f else 1f
-        val outlineColor = when {
-            !enabled -> colorScheme.onSurface.copy(alpha = 0.12f)
-            focused -> colorScheme.primary
-            else -> colorScheme.outline
+        update = {
+            set(containerModifier) {
+                applyModifier(it)
+                applyPointerHoverIcon(it, if (enabled) PointerIcon.Text else null)
+            }
+            set(enabled) { applyPointerHoverIcon(containerModifier, if (it) PointerIcon.Text else null) }
         }
-        val modifier = Modifier
-            .padding(top = MinimizedLabelHalfHeight.toFloat())
-            .width(minWidth = 280f - 16 - 16, maxWidth = null)
-            .height(minHeight = 56f - 16 - 16, maxHeight = null)
-            .then(modifier)
+    ) {
+        Outline(if (focused) 2f else 1f, outlineColor)
+
+        val id = remember { Uuid.random() }
 
         ComposeNode<HTMLTextAreaElement, DomApplier>(
             factory = {
@@ -59,47 +74,47 @@ actual fun TextField(
                 // Constant properties
                 element.id = ElementId(id.toString())
                 element.spellcheck = false
-                element.style.position = "relative"
+                element.rows = 1
                 element.style.resize = "none"
-                element.style.outline = "none"
-                element.style.borderStyle = "solid"
-                element.style.borderRadius = "4px"
-                element.style.backgroundColor = "transparent"
+                element.style.overflow = "hidden"
+                element.applyInputConstants()
+                element.applyEnterBehavior(singleLine)
 
                 // Dynamic properties
-                element.style.padding = "${9 - borderWidth}px"
-                element.style.borderWidth = "${borderWidth}px"
-                element.style.borderColor = outlineColor.toCssString()
-                element.applyModifier(modifier)
-                element.applyPointerHoverIcon(modifier, if (enabled) PointerIcon.Text else null)
-
+                element.style.color = textColor.toCssString()
+                element.style.caretColor = caretColor.toCssString()
                 element.value = value
                 element.disabled = !enabled
                 element.readOnly = readOnly
-                element.oninput = EventHandler { onValueChange(element.value) }
+                element.oninput = EventHandler {
+                    onValueChange(element.value)
+                    element.autoGrow()
+                }
                 element.onfocus = EventHandler { focused = true }
                 element.onblur = EventHandler { focused = false }
-                element.onkeydown = EventHandler { ev ->
-                    if (singleLine && ev.key == "Enter") {
-                        ev.preventDefault()
-                    }
-                }
+                element.autoGrow()
 
                 element
             },
             update = {
-                set(value) { if (this.value != it) this.value = it }
+                set(value) {
+                    if (this.value != it) {
+                        this.value = it
+                        autoGrow()
+                    }
+                }
+                set(onValueChange) { callback ->
+                    val field = this
+                    oninput = EventHandler {
+                        callback(field.value)
+                        field.autoGrow()
+                    }
+                }
+                set(singleLine) { applyEnterBehavior(it) }
                 set(enabled) { disabled = !it }
                 set(readOnly) { this.readOnly = it }
-                set(modifier) {
-                    applyModifier(it)
-                    applyPointerHoverIcon(it, if (enabled) PointerIcon.Text else null)
-                }
-                set(focused) {
-                    style.padding = "${9 - borderWidth}px"
-                    style.borderWidth = "${borderWidth}px"
-                    style.borderColor = outlineColor.toCssString()
-                }
+                set(textColor) { style.color = it.toCssString() }
+                set(caretColor) { style.caretColor = it.toCssString() }
             }
         )
 
@@ -108,56 +123,35 @@ actual fun TextField(
                 id = id,
                 floating = focused || value.isNotEmpty(),
                 contentColor = outlineColor,
+                backgroundColor = LocalBackgroundColor.current,
                 content = label
             )
         }
     }
 }
 
-@Composable
-private fun FloatingLabel(
-    id: Uuid,
-    floating: Boolean,
-    contentColor: Color,
-    content: @Composable () -> Unit
-) {
-    CompositionLocalProvider(LocalContentColor provides contentColor) {
-        val backgroundColor = LocalBackgroundColor.current
-        ComposeNode<HTMLLabelElement, DomApplier>(
-            factory = {
-                val element = document.createElement("label") as HTMLLabelElement
+private fun HTMLElement.applyInputConstants() {
+    style.display = "block"
+    style.width = "100%"
+    style.minHeight = "56px"
+    style.boxSizing = "border-box"
+    style.margin = "0"
+    style.padding = "16px"
+    style.background = "transparent"
+    style.border = "none"
+    style.outline = "none"
+    style.fontFamily = "inherit"
+    style.fontSize = "16px"
+    style.lineHeight = "24px"
+}
 
-                // Constant properties
-                element.htmlFor = ElementId(id.toString())
-                element.style.position = "absolute"
-                element.style.left = "12px"
-                element.style.pointerEvents = "none"
-                element.style.userSelect = "none"
-                element.style.whiteSpace = "nowrap"
-                element.style.transition = "top 0.15s linear, font-size 0.15s linear"
-
-                // Dynamic properties
-                element.applyFloatingLabelStyle(floating, backgroundColor)
-
-                element
-            },
-            update = {
-                set(floating) { applyFloatingLabelStyle(it, backgroundColor) }
-                set(backgroundColor) { applyFloatingLabelStyle(floating, it) }
-            },
-            content = content
-        )
+private fun HTMLTextAreaElement.applyEnterBehavior(singleLine: Boolean) {
+    onkeydown = EventHandler { ev ->
+        if (singleLine && ev.key == "Enter") ev.preventDefault()
     }
 }
 
-private fun HTMLLabelElement.applyFloatingLabelStyle(floating: Boolean, backgroundColor: Color) {
-    style.top = if (floating) "${MinimizedLabelHalfHeight}px" else "calc(${MinimizedLabelHalfHeight}px + 50%)"
-    style.transform = if (floating) {
-        "translateY(-50%)"
-    } else {
-        "translateY(calc(${MinimizedLabelHalfHeight.toFloat() / -2}px - 50%))"
-    }
-    style.fontSize = if (floating) "12px" else "16px"
-    style.background = if (floating) backgroundColor.toCssString() else "transparent"
-    style.padding = if (floating) "0 4px" else "0"
+private fun HTMLTextAreaElement.autoGrow() {
+    style.height = "auto"
+    style.height = "${scrollHeight}px"
 }
