@@ -30,9 +30,12 @@ actual fun Button(
                 val element = document.createElement("button") as HTMLButtonElement
                 element.style.border = "none"
                 element.style.outline = "none"
+                element.style.position = "relative"
+                element.style.overflow = "hidden"
                 element.applyModifier(modifier)
                 element.applyPointerHoverIcon(modifier, PointerIcon.Default)
                 element.onclick = EventHandler { onClick() }
+                element.applyRippleEventHandlers()
                 element.disabled = !enabled
                 element.style.height = "${size.height}px"
                 element.style.borderRadius = if (shape == ButtonShape.Round) {
@@ -67,6 +70,8 @@ actual fun Button(
                 }
                 set(colors) {
                     style.backgroundColor = (if (enabled) it.containerColor else it.disabledContainerColor).toCssString()
+                    val rippleColor = (if (enabled) it.contentColor else it.disabledContentColor).copy(alpha = 0.12f)
+                    onpointerdown = EventHandler { event -> createRipple(rippleColor.toCssString(), event) }
                 }
             }
         ) {
