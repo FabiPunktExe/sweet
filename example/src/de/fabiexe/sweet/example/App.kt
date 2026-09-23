@@ -7,10 +7,11 @@ import de.fabiexe.sweet.foundation.layout.fillMaxSize
 import de.fabiexe.sweet.material3.*
 import de.fabiexe.sweet.ui.Alignment
 import de.fabiexe.sweet.ui.Modifier
+import de.fabiexe.sweet.ui.graphics.Color
 
 @Composable
 fun App() {
-    Theme {
+    Theme(colorScheme(Color(0xAAFF88))) {
         Surface {
             Column(
                 modifier = Modifier.fillMaxSize(),

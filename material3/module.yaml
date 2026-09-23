@@ -6,8 +6,9 @@ aliases:
   nonWeb: [ jvm, android ]
 
 dependencies:
-  - //ui
-  - //foundation-layout
+  - //ui: exported
+  - //foundation-layout: exported
+  - $libs.materialkolor.colorUtilities
 
 dependencies@nonWeb:
   - $compose.ui
