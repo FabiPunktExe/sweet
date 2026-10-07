@@ -36,6 +36,10 @@ fun HTMLElement.applyPadding(modifier: Modifier) {
 }
 
 fun HTMLElement.applySize(modifier: Modifier) {
+    val padding = modifier.fold<PaddingValues, PaddingElement>(PaddingValues(0f)) { acc, element ->
+        acc + element.paddingValues
+    }
+
     val minWidth = modifier.fold<Float?, SizeElement>(null) { acc, element -> element.minWidth ?: acc }
     style.minWidth = if (minWidth != null) "${minWidth}px" else ""
 
@@ -55,7 +59,12 @@ fun HTMLElement.applySize(modifier: Modifier) {
             acc
         }
     }
-    style.width = if (widthFraction != null) "${widthFraction * 100}%" else "fit-content"
+    val horizontalMargin = padding.left + padding.right
+    style.width = when {
+        widthFraction == null -> "fit-content"
+        horizontalMargin > 0f -> "calc(${widthFraction * 100}% - ${horizontalMargin}px)"
+        else -> "${widthFraction * 100}%"
+    }
 
     val heightFraction = modifier.fold<Float?, FillElement>(null) { acc, element ->
         if (element.direction == FillElement.Direction.Vertical || element.direction == FillElement.Direction.Both) {
@@ -64,7 +73,12 @@ fun HTMLElement.applySize(modifier: Modifier) {
             acc
         }
     }
-    style.height = if (heightFraction != null) "${heightFraction * 100}%" else "fit-content"
+    val verticalMargin = padding.top + padding.bottom
+    style.height = when {
+        heightFraction == null -> "fit-content"
+        verticalMargin > 0f -> "calc(${heightFraction * 100}% - ${verticalMargin}px)"
+        else -> "${heightFraction * 100}%"
+    }
 }
 
 fun HTMLElement.applyPointerHoverIcon(modifier: Modifier, defaultIcon: PointerIcon?) {
