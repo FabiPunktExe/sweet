@@ -10,6 +10,8 @@ import de.fabiexe.sweet.material3.*
 import de.fabiexe.sweet.ui.Alignment
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.graphics.Color
+import example.generated.resources.Res
+import example.generated.resources.star
 
 private val drawerPages = listOf("Home", "Profile", "Settings", "About")
 
@@ -70,6 +72,8 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
             var count by remember { mutableStateOf(0) }
             var name by remember { mutableStateOf("") }
             var message by remember { mutableStateOf("") }
+            Icon(Res.drawable.star, contentDescription = "Star")
+            Icon(Res.drawable.star, contentDescription = "Star (primary)", tint = currentColorScheme().primary)
             TextField(
                 value = name,
                 onValueChange = { name = it },

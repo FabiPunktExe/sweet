@@ -2,14 +2,14 @@ package de.fabiexe.sweet.ui
 
 import androidx.compose.runtime.AbstractApplier
 import js.array.asList
-import web.html.HTMLElement
+import web.dom.Element
 
-class DomApplier(root: HTMLElement) : AbstractApplier<HTMLElement>(root) {
-    override fun insertTopDown(index: Int, instance: HTMLElement) {
+class DomApplier(root: Element) : AbstractApplier<Element>(root) {
+    override fun insertTopDown(index: Int, instance: Element) {
         current.insertBefore(instance, current.children.item(index))
     }
 
-    override fun insertBottomUp(index: Int, instance: HTMLElement) {}
+    override fun insertBottomUp(index: Int, instance: Element) {}
 
     override fun remove(index: Int, count: Int) {
         repeat(count) {

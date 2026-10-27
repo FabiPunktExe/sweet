@@ -40,6 +40,12 @@ not Gradle.
   NonWeb variant with the same path/package.
 - Namespace is `de.fabiexe.sweet.*`; one file per topic (e.g. `material3/Button.kt` for
   all `Button` variants).
+- Resources live in the module root under `composeResources/<type>/` (e.g.
+  `example/composeResources/drawable/star.svg`); Compose Multiplatform detects them
+  automatically. Access is through the generated `<module>.generated.resources.Res`
+  accessors, which are `internal` by default – so a resource can only be referenced from
+  inside its own module. Icons are `DrawableResource`s; SVG works on JVM, JS and WasmJs,
+  but not on Android (Compose resources has no SVG support there).
 
 ## Build & Test
 
