@@ -111,6 +111,12 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
             Button(onClick = { drawerPermanent.value = !drawerPermanent.value }) {
                 Text(if (drawerPermanent.value) "Switch to modal drawer" else "Switch to permanent drawer")
             }
+            TextButton(onClick = { count = 0 }) {
+                Text("Reset count")
+            }
+            TextButton(onClick = {}, enabled = false, shape = ButtonShape.Square) {
+                Text("Disabled text button")
+            }
         }
     }
 }
