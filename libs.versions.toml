@@ -1,5 +1,5 @@
 [versions]
-kotlin-wrappers = "2026.10.6"
+kotlin-wrappers = "2026.11.0"
 materialkolor = "6.0.0"
 
 [libraries]
