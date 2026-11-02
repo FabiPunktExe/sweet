@@ -3,6 +3,7 @@ package de.fabiexe.sweet.example
 import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.Arrangement
 import de.fabiexe.sweet.foundation.layout.Column
+import de.fabiexe.sweet.foundation.layout.ScrollableColumn
 import de.fabiexe.sweet.foundation.layout.fillMaxSize
 import de.fabiexe.sweet.foundation.layout.fillMaxWidth
 import de.fabiexe.sweet.foundation.layout.padding
@@ -64,7 +65,7 @@ fun DrawerContent(drawerOpen: MutableState<Boolean>, selectedPage: MutableState<
 @Composable
 fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<Boolean>) {
     Surface {
-        Column(
+        ScrollableColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.Center,
             verticalArrangement = Arrangement.Center

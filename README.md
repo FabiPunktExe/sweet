@@ -14,13 +14,13 @@ On web platforms (JS, Wasm JS) DOM elements are used to draw the components inst
 
 ## Modules
 
-| Module | Description |
-|---|---|
-| `ui` | Basic UI building blocks |
-| `foundation-layout` | Layout components: (`Row`, `Column`, `Box`) |
-| `material3` | Material 3 components |
-| `example` | Shared example app code |
-| `example-jvm` / `example-js` / `example-wasm` | Platform entry points for the example app |
+| Module                                        | Description                                                     |
+|-----------------------------------------------|-----------------------------------------------------------------|
+| `ui`                                          | Basic UI building blocks                                        |
+| `foundation-layout`                           | Layout components: (`Row`, `Column`, `Box`, `ScrollableColumn`) |
+| `material3`                                   | Material 3 components                                           |
+| `example`                                     | Shared example app code                                         |
+| `example-jvm` / `example-js` / `example-wasm` | Platform entry points for the example app                       |
 
 
 ## Build & Run
