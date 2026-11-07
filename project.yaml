@@ -3,6 +3,6 @@ modules:
   - example-js
   - example-jvm
   - example-wasm
-  - foundation-layout
+  - foundation
   - material3
   - ui

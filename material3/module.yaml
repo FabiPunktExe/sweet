@@ -5,9 +5,12 @@ product:
 aliases:
   nonWeb: [ jvm, android ]
 
+apply:
+  - //publishing.module-template.yaml
+
 dependencies:
   - //ui: exported
-  - //foundation-layout: exported
+  - //foundation: exported
   - $libs.materialkolor.colorUtilities
 
 dependencies@nonWeb:
@@ -20,3 +23,5 @@ dependencies@web:
 settings:
   compose:
     enabled: true
+  publishing:
+    artifactId: material3

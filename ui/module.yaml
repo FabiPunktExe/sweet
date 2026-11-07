@@ -5,6 +5,9 @@ product:
 aliases:
   nonWeb: [ jvm, android ]
 
+apply: 
+  - //publishing.module-template.yaml
+
 dependencies@nonWeb:
   - $compose.ui
 
@@ -14,6 +17,8 @@ dependencies@web:
 settings:
   compose:
     enabled: true
+  publishing:
+    artifactId: ui
 
 settings@wasmJs:
   kotlin:

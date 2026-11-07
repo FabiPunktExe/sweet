@@ -4,7 +4,7 @@ product:
 
 dependencies:
   - //ui
-  - //foundation-layout
+  - //foundation
   - //material3
 
 settings:
