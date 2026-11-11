@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import de.fabiexe.sweet.ui.graphics.Color
-import de.fabiexe.sweet.ui.text.font.FontWeight
+import de.fabiexe.sweet.ui.text.TextStyle
 
 val LocalColorScheme = compositionLocalOf { ColorScheme() }
 val LocalBackgroundColor = compositionLocalOf<Color> { error("not provided") }
 val LocalContentColor = compositionLocalOf<Color> { error("not provided") }
-val LocalFontWeight = compositionLocalOf<FontWeight> { error("not provided") }
+val LocalTextStyle = compositionLocalOf { TextStyle() }
 
 @Composable
 actual fun currentColorScheme(): ColorScheme = LocalColorScheme.current
@@ -25,7 +25,6 @@ actual fun Theme(
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
         LocalContentColor provides colorScheme.onSurface,
-        LocalFontWeight provides FontWeight.Normal,
         content = content
     )
 }

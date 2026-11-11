@@ -1,7 +1,6 @@
 package de.fabiexe.sweet.material3
 
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import de.fabiexe.sweet.foundation.layout.toAndroidxModifier
@@ -17,7 +16,6 @@ fun ButtonColors.toAndroidxButtonColors() = AndroidxButtonColors(
     disabledContentColor = disabledContentColor.toAndroidxColor()
 )
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun Button(
     onClick: () -> Unit,

@@ -64,7 +64,7 @@ actual fun NavigationDrawerItem(
     ) {
         CompositionLocalProvider(
             LocalContentColor provides contentColor,
-            LocalFontWeight provides FontWeight.Medium
+            LocalTextStyle provides LocalTextStyle.current.copy(fontWeight = FontWeight.Medium)
         ) {
             Row(
                 modifier = Modifier

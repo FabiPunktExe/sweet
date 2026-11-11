@@ -81,7 +81,7 @@ actual fun TextButton(
             val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
             CompositionLocalProvider(
                 LocalContentColor provides contentColor,
-                LocalFontWeight provides FontWeight.SemiBold
+                LocalTextStyle provides LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold)
             ) {
                 Row(
                     modifier = Modifier

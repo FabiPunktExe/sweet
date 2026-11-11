@@ -9,6 +9,7 @@ import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.graphics.toCssString
 import de.fabiexe.sweet.ui.input.pointer.PointerIcon
+import de.fabiexe.sweet.ui.text.TextStyle
 import de.fabiexe.sweet.ui.text.font.FontWeight
 import web.dom.document
 import web.events.EventHandler
@@ -43,7 +44,11 @@ actual fun Button(
                 } else {
                     "${size.squareCornerRadius}px"
                 }
-                element.style.backgroundColor = (if (enabled) colors.containerColor else colors.disabledContainerColor).toCssString()
+                element.style.backgroundColor = if (enabled) {
+                    colors.containerColor
+                } else {
+                    colors.disabledContainerColor
+                }.toCssString()
                 element
             },
             update = {
@@ -69,7 +74,11 @@ actual fun Button(
                     }
                 }
                 set(colors) {
-                    style.backgroundColor = (if (enabled) it.containerColor else it.disabledContainerColor).toCssString()
+                    style.backgroundColor = if (enabled) {
+                        it.containerColor
+                    } else {
+                        it.disabledContainerColor
+                    }.toCssString()
                     val rippleColor = (if (enabled) it.contentColor else it.disabledContentColor).copy(alpha = 0.12f)
                     onpointerdown = EventHandler { event -> createRipple(rippleColor.toCssString(), event) }
                 }
@@ -78,12 +87,23 @@ actual fun Button(
             val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
             CompositionLocalProvider(
                 LocalContentColor provides contentColor,
-                LocalFontWeight provides FontWeight.SemiBold
+                LocalTextStyle provides TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14f,
+                    lineHeight = 20f,
+                    letterSpacing = 0.1f
+                )
             ) {
                 Row(
                     modifier = Modifier
-                        .width(minWidth = 58f - size.contentPadding.left - size.contentPadding.right, maxWidth = null)
-                        .height(minHeight = 40f - size.contentPadding.top - size.contentPadding.bottom, maxHeight = null)
+                        .width(
+                            minWidth = 58f - size.contentPadding.left - size.contentPadding.right,
+                            maxWidth = null
+                        )
+                        .height(
+                            minHeight = 40f - size.contentPadding.top - size.contentPadding.bottom,
+                            maxHeight = null
+                        )
                         .padding(size.contentPadding),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Center,
