@@ -18,7 +18,11 @@ private const val rippleFadingMarker = "sweet-ripple-fading"
 private const val rippleExpandTransition = "transform ${rippleExpandDuration}ms $rippleExpandEasing"
 private const val rippleFadeTransition = "$rippleExpandTransition, opacity ${rippleFadeDuration}ms linear"
 
-internal fun HTMLElement.createRipple(rippleColorCss: String, event: PointerEvent) {
+internal fun HTMLElement.createRipple(
+    rippleColorCss: String,
+    event: PointerEvent,
+    onFinished: () -> Unit = {}
+) {
     val rect = getBoundingClientRect()
     val x = event.clientX - rect.left
     val y = event.clientY - rect.top
@@ -49,6 +53,7 @@ internal fun HTMLElement.createRipple(rippleColorCss: String, event: PointerEven
     ripple.ontransitionend = EventHandler { event ->
         if (event.propertyName == "opacity") {
             removeChild(ripple)
+            onFinished()
         }
     }
 

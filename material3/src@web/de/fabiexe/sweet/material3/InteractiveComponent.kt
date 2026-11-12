@@ -1,17 +1,38 @@
 package de.fabiexe.sweet.material3
 
 import androidx.compose.runtime.Composable
-import de.fabiexe.sweet.foundation.layout.Box
-import de.fabiexe.sweet.foundation.layout.height
-import de.fabiexe.sweet.ui.Alignment
-import de.fabiexe.sweet.ui.Modifier
+import androidx.compose.runtime.ComposeNode
+import de.fabiexe.sweet.ui.DomApplier
+import web.dom.document
+import web.events.EventHandler
+import web.html.HTMLDivElement
+import web.html.HTMLElement
+import web.window.window
+
+// Material's compact window size class (phones).
+private const val compactMaxWidth = 600
 
 @Composable
 fun InteractiveComponent(content: @Composable () -> Unit) {
-    Box(
-        modifier = Modifier.height(minHeight = 48f, maxHeight = null),
-        horizontalAlignment = Alignment.Center,
-        verticalAlignment = Alignment.Center,
+    ComposeNode<HTMLDivElement, DomApplier>(
+        factory = {
+            val element = document.createElement("div") as HTMLDivElement
+
+            // Constant properties
+            element.style.display = "flex"
+            element.style.justifyContent = "center"
+            element.style.alignItems = "center"
+            element.style.minHeight = "48px"
+
+            element.onclick = EventHandler { event ->
+                if (event.target == element && window.innerWidth <= compactMaxWidth) {
+                    (element.firstElementChild as? HTMLElement)?.click()
+                }
+            }
+
+            element
+        },
+        update = {},
         content = content
     )
 }

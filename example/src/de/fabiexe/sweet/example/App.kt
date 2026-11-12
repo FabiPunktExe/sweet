@@ -3,6 +3,7 @@ package de.fabiexe.sweet.example
 import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.Arrangement
 import de.fabiexe.sweet.foundation.layout.Column
+import de.fabiexe.sweet.foundation.layout.Row
 import de.fabiexe.sweet.foundation.layout.ScrollableColumn
 import de.fabiexe.sweet.foundation.layout.fillMaxSize
 import de.fabiexe.sweet.foundation.layout.fillMaxWidth
@@ -73,9 +74,17 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
             var count by remember { mutableStateOf(0) }
             var name by remember { mutableStateOf("") }
             var message by remember { mutableStateOf("") }
+            var checked by remember { mutableStateOf(false) }
             var dialogOpen by remember { mutableStateOf(false) }
             Icon(Res.drawable.star, contentDescription = "Star")
             Icon(Res.drawable.star, contentDescription = "Star (primary)", tint = currentColorScheme().primary)
+            Row(
+                horizontalArrangement = Arrangement.Start.spacedBy(8f),
+                verticalAlignment = Alignment.Center
+            ) {
+                Checkbox(checked = checked, onCheckedChange = { checked = it })
+                Text("Checkbox")
+            }
             TextField(
                 value = name,
                 onValueChange = { name = it },
