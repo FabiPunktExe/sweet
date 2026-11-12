@@ -85,6 +85,8 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
                 Checkbox(checked = checked, onCheckedChange = { checked = it })
                 Text("Checkbox")
             }
+            LinearWavyProgressIndicator()
+            LinearWavyProgressIndicator(progress = ((count + 6) % 11) / 10f)
             TextField(
                 value = name,
                 onValueChange = { name = it },

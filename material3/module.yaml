@@ -25,3 +25,8 @@ settings:
     enabled: true
   publishing:
     artifactId: material3
+
+settings@wasmJs:
+  kotlin:
+    optIns:
+      - kotlin.js.ExperimentalWasmJsInterop

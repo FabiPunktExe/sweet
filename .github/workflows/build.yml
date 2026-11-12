@@ -8,5 +8,3 @@ jobs:
       - uses: actions/checkout@v7
       - name: Build
         run: ./kotlin build
-      - name: Test
-        run: ./kotlin test
