@@ -73,6 +73,7 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
             var count by remember { mutableStateOf(0) }
             var name by remember { mutableStateOf("") }
             var message by remember { mutableStateOf("") }
+            var dialogOpen by remember { mutableStateOf(false) }
             Icon(Res.drawable.star, contentDescription = "Star")
             Icon(Res.drawable.star, contentDescription = "Star (primary)", tint = currentColorScheme().primary)
             TextField(
@@ -117,6 +118,26 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
             }
             TextButton(onClick = {}, enabled = false, shape = ButtonShape.Square) {
                 Text("Disabled text button")
+            }
+            Button(onClick = { dialogOpen = true }) {
+                Text("Open dialog")
+            }
+            if (dialogOpen) {
+                AlertDialog(
+                    onDismissRequest = { dialogOpen = false },
+                    title = { Text("Dialog") },
+                    text = { Text("This is an alert dialog. Click outside or press Escape to close it.") },
+                    confirmButton = {
+                        Button(onClick = { dialogOpen = false }) {
+                            Text("OK")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { dialogOpen = false }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
             }
         }
     }
