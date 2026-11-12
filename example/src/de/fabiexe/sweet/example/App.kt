@@ -93,7 +93,7 @@ fun AppContent(drawerOpen: MutableState<Boolean>, drawerPermanent: MutableState<
                 label = { Text("Name") }
             )
             Text("Test")
-            Text("Test")
+            Text("Colored text", color = currentColorScheme().error)
             TextField(
                 value = message,
                 onValueChange = { message = it },

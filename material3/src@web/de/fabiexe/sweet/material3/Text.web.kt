@@ -5,6 +5,7 @@ import androidx.compose.runtime.ComposeNode
 import de.fabiexe.sweet.foundation.layout.applyPadding
 import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
+import de.fabiexe.sweet.ui.graphics.Color
 import de.fabiexe.sweet.ui.graphics.toCssString
 import de.fabiexe.sweet.ui.text.TextStyle
 import web.dom.document
@@ -15,21 +16,21 @@ import web.html.HTMLSpanElement
 actual fun Text(
     text: String,
     modifier: Modifier,
+    color: Color,
     style: TextStyle?
 ) {
-    val contentColor = LocalContentColor.current
     val textStyle = LocalTextStyle.current.merge(style)
     ComposeNode<HTMLSpanElement, DomApplier>(
         factory = {
             val element = document.createElement("span") as HTMLSpanElement
-            element.style.color = contentColor.toCssString()
+            element.style.color = color.toCssString()
             element.applyTextStyle(textStyle)
             element.textContent = text
             element.applyPadding(modifier)
             element
         },
         update = {
-            set(contentColor) { this.style.color = it.toCssString() }
+            set(color) { this.style.color = it.toCssString() }
             set(textStyle, HTMLElement::applyTextStyle)
             set(text) { textContent = it }
             set(modifier, HTMLElement::applyPadding)
