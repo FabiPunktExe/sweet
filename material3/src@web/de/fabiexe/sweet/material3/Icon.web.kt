@@ -6,11 +6,9 @@ import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
 import de.fabiexe.sweet.ui.graphics.Color
 import de.fabiexe.sweet.ui.graphics.toCssString
-import js.iterable.iterator
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.getDrawableResourceBytes
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
-import web.dom.Element
 import web.html.HTMLElement
 import web.parsing.DOMParser
 import web.parsing.DOMParserSupportedType
@@ -42,14 +40,14 @@ actual fun Icon(
 
                 // Dynamic properties
                 element.applyContentDescription(contentDescription)
-                element.tintSvg(tint)
+                element.style.color = tint.toCssString()
                 element.applyModifier(modifier)
 
                 element
             },
             update = {
                 set(contentDescription, HTMLElement::applyContentDescription)
-                set(tint, HTMLElement::tintSvg)
+                set(tint) { style.color = tint.toCssString() }
                 set(modifier, HTMLElement::applyModifier)
             }
         )
@@ -65,17 +63,5 @@ private fun HTMLElement.applyContentDescription(description: String?) {
         removeAttribute("aria-hidden")
         setAttribute("role", "img")
         setAttribute("aria-label", description)
-    }
-}
-
-private fun Element.tintSvg(tint: Color) {
-    if ((getAttribute("fill") ?: "none") == "none") {
-        setAttribute("fill", tint.toCssString())
-    }
-    if ((getAttribute("stroke") ?: "none") == "none") {
-        setAttribute("stroke", tint.toCssString())
-    }
-    for (child in children) {
-        child.tintSvg(tint)
     }
 }
