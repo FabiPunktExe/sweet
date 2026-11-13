@@ -1,8 +1,6 @@
 package de.fabiexe.sweet.material3
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.*
 import de.fabiexe.sweet.ui.Alignment
 import de.fabiexe.sweet.ui.DomApplier
@@ -14,13 +12,6 @@ import web.dom.document
 import web.events.EventHandler
 import web.html.HTMLButtonElement
 
-private fun HTMLButtonElement.applyTextButtonColors(enabled: Boolean, colors: ButtonColors) {
-    disabled = !enabled
-    style.backgroundColor = (if (enabled) colors.containerColor else colors.disabledContainerColor).toCssString()
-    val rippleColor = (if (enabled) colors.contentColor else colors.disabledContentColor).copy(alpha = 0.12f)
-    onpointerdown = EventHandler { event -> createRipple(rippleColor.toCssString(), event) }
-}
-
 @Composable
 actual fun TextButton(
     onClick: () -> Unit,
@@ -31,6 +22,11 @@ actual fun TextButton(
     colors: ButtonColors,
     content: @Composable () -> Unit
 ) {
+    var hovered by remember { mutableStateOf(false) }
+    val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
+    val backgroundColor = buttonBackgroundColor(enabled, colors, hovered)
+    val rippleColor = contentColor.copy(alpha = 0.12f)
+
     InteractiveComponent {
         ComposeNode<HTMLButtonElement, DomApplier>(
             factory = {
@@ -44,13 +40,18 @@ actual fun TextButton(
                 element.applyPointerHoverIcon(modifier, PointerIcon.Default)
                 element.onclick = EventHandler { onClick() }
                 element.applyRippleEventHandlers()
+                element.onmouseenter = EventHandler { hovered = true }
+                element.onmouseleave = EventHandler { hovered = false }
+                element.onpointerdown = EventHandler { event -> element.createRipple(rippleColor.toCssString(), event) }
+                element.disabled = !enabled
+                element.style.transition = buttonTransition
                 element.style.height = "${size.height}px"
                 element.style.borderRadius = if (shape == ButtonShape.Round) {
                     "100vh"
                 } else {
                     "${size.squareCornerRadius}px"
                 }
-                element.applyTextButtonColors(enabled, colors)
+                element.style.backgroundColor = backgroundColor.toCssString()
                 element
             },
             update = {
@@ -74,19 +75,27 @@ actual fun TextButton(
                         "${size.squareCornerRadius}px"
                     }
                 }
-                set(enabled) { applyTextButtonColors(it, colors) }
-                set(colors) { applyTextButtonColors(enabled, it) }
+                set(enabled) { disabled = !it }
+                set(backgroundColor) { style.backgroundColor = it.toCssString() }
+                set(rippleColor) {
+                    onpointerdown = EventHandler { event -> createRipple(it.toCssString(), event) }
+                }
             }
         ) {
-            val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
             CompositionLocalProvider(
                 LocalContentColor provides contentColor,
                 LocalTextStyle provides LocalTextStyle.current.copy(fontWeight = FontWeight.SemiBold)
             ) {
                 Row(
                     modifier = Modifier
-                        .width(minWidth = 58f - size.contentPadding.left - size.contentPadding.right, maxWidth = null)
-                        .height(minHeight = 40f - size.contentPadding.top - size.contentPadding.bottom, maxHeight = null)
+                        .width(
+                            minWidth = 58f - size.contentPadding.left - size.contentPadding.right,
+                            maxWidth = null
+                        )
+                        .height(
+                            minHeight = 40f - size.contentPadding.top - size.contentPadding.bottom,
+                            maxHeight = null
+                        )
                         .padding(size.contentPadding),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Center,

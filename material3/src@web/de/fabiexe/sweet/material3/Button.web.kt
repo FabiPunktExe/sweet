@@ -1,19 +1,46 @@
 package de.fabiexe.sweet.material3
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeNode
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import de.fabiexe.sweet.foundation.layout.*
 import de.fabiexe.sweet.ui.Alignment
 import de.fabiexe.sweet.ui.DomApplier
 import de.fabiexe.sweet.ui.Modifier
-import de.fabiexe.sweet.ui.graphics.toCssString
+import de.fabiexe.sweet.ui.graphics.*
 import de.fabiexe.sweet.ui.input.pointer.PointerIcon
 import de.fabiexe.sweet.ui.text.TextStyle
 import de.fabiexe.sweet.ui.text.font.FontWeight
 import web.dom.document
 import web.events.EventHandler
 import web.html.HTMLButtonElement
+import kotlin.math.roundToInt
+
+private const val hoverStateLayerAlpha = 0.08f
+internal const val buttonTransition = "background-color 0.1s linear"
+
+/** The background color of a button, including the hover state layer. */
+internal fun buttonBackgroundColor(enabled: Boolean, colors: ButtonColors, hovered: Boolean): Color {
+    if (!enabled) return colors.disabledContainerColor
+    if (!hovered) return colors.containerColor
+    return colors.contentColor.copy(alpha = hoverStateLayerAlpha).compositeOver(colors.containerColor)
+}
+
+/** Composites this (potentially translucent) color over [background]. */
+private fun Color.compositeOver(background: Color): Color {
+    val foregroundAlpha = alpha / 255f
+    val backgroundAlpha = background.alpha / 255f
+    val outAlpha = foregroundAlpha + backgroundAlpha * (1f - foregroundAlpha)
+    if (outAlpha <= 0f) return Color(0x00000000)
+
+    val resultRed = (red * foregroundAlpha + background.red * backgroundAlpha * (1f - foregroundAlpha)) / outAlpha
+    val resultGreen = (green * foregroundAlpha + background.green * backgroundAlpha * (1f - foregroundAlpha)) / outAlpha
+    val resultBlue = (blue * foregroundAlpha + background.blue * backgroundAlpha * (1f - foregroundAlpha)) / outAlpha
+    return Color(
+        resultRed.roundToInt(),
+        resultGreen.roundToInt(),
+        resultBlue.roundToInt(),
+        (outAlpha * 255f).roundToInt()
+    )
+}
 
 @Composable
 actual fun Button(
@@ -25,6 +52,11 @@ actual fun Button(
     colors: ButtonColors,
     content: @Composable () -> Unit
 ) {
+    var hovered by remember { mutableStateOf(false) }
+    val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
+    val backgroundColor = buttonBackgroundColor(enabled, colors, hovered)
+    val rippleColor = contentColor.copy(alpha = 0.12f)
+
     InteractiveComponent {
         ComposeNode<HTMLButtonElement, DomApplier>(
             factory = {
@@ -37,18 +69,18 @@ actual fun Button(
                 element.applyPointerHoverIcon(modifier, PointerIcon.Default)
                 element.onclick = EventHandler { onClick() }
                 element.applyRippleEventHandlers()
+                element.onmouseenter = EventHandler { hovered = true }
+                element.onmouseleave = EventHandler { hovered = false }
+                element.onpointerdown = EventHandler { event -> element.createRipple(rippleColor.toCssString(), event) }
                 element.disabled = !enabled
+                element.style.transition = buttonTransition
                 element.style.height = "${size.height}px"
                 element.style.borderRadius = if (shape == ButtonShape.Round) {
                     "100vh"
                 } else {
                     "${size.squareCornerRadius}px"
                 }
-                element.style.backgroundColor = if (enabled) {
-                    colors.containerColor
-                } else {
-                    colors.disabledContainerColor
-                }.toCssString()
+                element.style.backgroundColor = backgroundColor.toCssString()
                 element
             },
             update = {
@@ -73,18 +105,12 @@ actual fun Button(
                         "${size.squareCornerRadius}px"
                     }
                 }
-                set(colors) {
-                    style.backgroundColor = if (enabled) {
-                        it.containerColor
-                    } else {
-                        it.disabledContainerColor
-                    }.toCssString()
-                    val rippleColor = (if (enabled) it.contentColor else it.disabledContentColor).copy(alpha = 0.12f)
-                    onpointerdown = EventHandler { event -> createRipple(rippleColor.toCssString(), event) }
+                set(backgroundColor) { style.backgroundColor = it.toCssString() }
+                set(rippleColor) {
+                    onpointerdown = EventHandler { event -> createRipple(it.toCssString(), event) }
                 }
             }
         ) {
-            val contentColor = if (enabled) colors.contentColor else colors.disabledContentColor
             CompositionLocalProvider(
                 LocalContentColor provides contentColor,
                 LocalTextStyle provides TextStyle(
