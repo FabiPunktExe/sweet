@@ -19,9 +19,13 @@ internal const val buttonTransition = "background-color 0.1s linear"
 
 /** The background color of a button, including the hover state layer. */
 internal fun buttonBackgroundColor(enabled: Boolean, colors: ButtonColors, hovered: Boolean): Color {
-    if (!enabled) return colors.disabledContainerColor
-    if (!hovered) return colors.containerColor
-    return colors.contentColor.copy(alpha = hoverStateLayerAlpha).compositeOver(colors.containerColor)
+    return when {
+        !enabled -> colors.disabledContainerColor
+        hovered -> colors.contentColor
+            .copy(alpha = hoverStateLayerAlpha)
+            .compositeOver(colors.containerColor)
+        else -> colors.containerColor
+    }
 }
 
 /** Composites this (potentially translucent) color over [background]. */
