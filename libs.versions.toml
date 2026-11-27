@@ -1,6 +1,6 @@
 [versions]
 kotlin-wrappers = "2026.11.4"
-materialkolor = "6.0.0"
+materialkolor = "6.1.0"
 
 [libraries]
 kotlin-wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version.ref = "kotlin-wrappers" }
